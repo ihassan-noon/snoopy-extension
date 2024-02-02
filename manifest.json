@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Snoopy Extension (noon.com)",
+    "description": "This allows users to identify and submit product categories that are not offered by noon.",
+    "author": "Inhamul Hassan",
+    "version": "1.0",
+    "action": {
+        "default_popup": "/popup/popup.html",
+        "default_icon": {
+            "16": "/images/snoopy_icon.png",
+            "32": "/images/snoopy_icon.png",
+            "48": "/images/snoopy_icon.png",
+            "128": "/images/snoopy_icon.png"
+        }
+    },
+    "permissions": ["activeTab"]
+}

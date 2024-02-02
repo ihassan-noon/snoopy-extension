@@ -1,0 +1,67 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+
+<body>
+  <h1 class="snoopy-title">
+    Snoopy</h1>
+  <div class="snoopy-radio-form">
+    <input type="radio" id="assortment-radio" name="snoopy" value="assortment" />
+    <label class="snoopy-radio-label" for="assortment-radio">Assortment Gap</label>
+  </div>
+  <div id="assortment-form">
+    <form class="snoopy-form">
+      <div>
+        <label class="snoopy-bold-label" for="snoopy_category">What did you not find? Please type in detail
+          below:</label><br>
+        <textarea class="snoopy-input" type="text" id="snoopy_category" name="snoopy_category"
+          placeholder="(Lenovo tablets has less selection vs Amazon)"></textarea><br>
+      </div>
+      <div>
+        <label class="snoopy-bold-label" for="snoopy_competitor">Country:</label>
+        <div class="snoopy-radio-container">
+          <input type="radio" id="AE" name="snoopy_country" value="AE">
+          <label class="snoopy-radio-label" for="AE">AE</label>
+          <input type="radio" id="SA" name="snoopy_country" value="SA">
+          <label class="snoopy-radio-label" for="SA">SA</label>
+          <input type="radio" id="BOTH" name="snoopy_country" value="Both">
+          <label class="snoopy-radio-label" for="BOTH">Both</label>
+        </div>
+      </div>
+      <div>
+        <label class="snoopy-bold-label" for="snoopy_competitor">Category present in noon:</label>
+        <div class="snoopy-radio-container">
+          <input type="radio" id="not_present" name="snoopy_assortment" value="not_present">
+          <label class="snoopy-radio-label" for="not_present">Not present at all</label>
+          <input type="radio" id="not_present_express" name="snoopy_assortment" value="not_present_express">
+          <label class="snoopy-radio-label" for="not_present_express">Not present on express</label>
+        </div>
+      </div>
+      <div>
+        <label class="snoopy-bold-label" for="snoopy_competitor">URL of the missing selection (from
+          competitor):</label><br>
+        <input class="snoopy-input" type="url" id="snoopy_competitor" name="snoopy_competitor"
+          placeholder="https://www.amazon.ae/s?k=lenovo+tablets"><br>
+      </div>
+    </form>
+  </div>
+  <div class="snoopy-radio-form">
+    <input type="radio" id="others-radio" name="snoopy" value="others" />
+    <label class="snoopy-radio-label" for="others-radio">Others</label>
+  </div>
+  <div id="others-form">
+    <form class="snoopy-form">
+      <div>
+        <label class="snoopy-bold-label" for="snoopy_others">Add any comments:</label><br>
+        <textarea class="snoopy-input" type="text" id="snoopy_others" name="snoopy_others"
+          placeholder="Add in your comments here..."></textarea><br>
+      </div>
+    </form>
+  </div>
+  <button id="snoopy_submit" disabled>Submit</button>
+  <script src="./popup.js"></script>
+</body>
+
+</html>
