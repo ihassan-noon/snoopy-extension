@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Croissant+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Croissant+One&display=swap");
 
 body {
   padding: 0;
@@ -33,7 +33,7 @@ h1.snoopy-title {
   text-align: center;
   font-size: 24px;
   font-style: bold;
-  font-family: 'Croissant One', serif;
+  font-family: "Croissant One", serif;
   color: #a2001d;
   margin: 2px auto;
 }
@@ -177,7 +177,7 @@ label.snoopy-bold-label {
   div.snoopy-country-toggle
   input[value="SA"]:checked
   ~ span.faux-selector {
-  background: #496e2d;
+  background: #199d00;
   left: 33px;
 }
 .snoopy-form
@@ -194,6 +194,59 @@ label.snoopy-bold-label {
 }
 .snoopy-form div.snoopy-country-toggle input[value="EG"]:checked + label {
   color: #fff;
+}
+
+.snoopy-form #file-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 10px 22px 5px;
+}
+
+.snoopy-form #file-container > #snoopy_file {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.snoopy-form #file-container > #snoopy_file + label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: 6px;
+  max-width: 80%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 5px 15px;
+  color: #333;
+  border: 2px solid currentColor;
+  transition: all 250ms ease-in-out;
+  opacity: 1;
+}
+
+.snoopy-form #file-container > #snoopy_file + label:hover {
+  opacity: 0.5;
+}
+
+.snoopy-form #file-container #snoopy_file_label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.snoopy-form #file-container #snoopy_file_icon {
+  width: 14px;
+  height: 14px;
 }
 
 #snoopy_submit {
@@ -215,6 +268,8 @@ label.snoopy-bold-label {
 
 #snoopy_submit:disabled {
   border: 1px solid #ccc;
+  cursor: auto;
+  opacity: 0.75;
 }
 
 #snoopy_submit:hover:not(:disabled) {

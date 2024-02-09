@@ -5,14 +5,23 @@ let assortmentFormElements = {
   snoopy_country: null,
   snoopy_assortment: null,
   snoopy_competitor: null,
+  snoopy_attachment: null,
 };
 let othersFormElements = {
   snoopy_others: null,
 };
+let tabUrl = null;
 
 // elements
 const formSubmit = document.getElementById("snoopy_submit");
-const radioButtons = document.querySelectorAll('input[name="snoopy"]');
+const fileInput = document.getElementById("snoopy_file");
+const mainRadioButtons = document.querySelectorAll('input[name="snoopy"]');
+const attachmentRadioButtons = document.querySelectorAll(
+  'input[name="snoopy_attachment"]'
+);
+const countryButtons = document.querySelectorAll(
+  'input[name="snoopy_country"]'
+);
 
 // event handlers
 const handleInput = (event, selectedForm) => {
@@ -45,6 +54,12 @@ const handleInput = (event, selectedForm) => {
         snoopy_competitor: value,
       };
       break;
+    case "snoopy_attachment":
+      assortmentFormElements = {
+        ...assortmentFormElements,
+        snoopy_attachment: value,
+      };
+      break;
     case "snoopy_others":
       othersFormElements = {
         ...othersFormElements,
@@ -68,7 +83,7 @@ const handleInput = (event, selectedForm) => {
   }
 };
 
-const handleRadioClick = () => {
+const handleMainRadioClick = () => {
   // disable form button on radio change
   formSubmit.disabled = true;
   const formAssortment = document.getElementById("assortment-form");
@@ -94,50 +109,88 @@ const handleRadioClick = () => {
     );
 };
 
-const handleClick = () => {
-  chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
-    const screenshotUrl = await chrome.tabs.captureVisibleTab();
-    const url = tabs[0].url;
+const handleAttachmentRadioClick = () => {
+  const fileContainer = document.getElementById("file-container");
+  const radioManual = document.getElementById("file-attachment");
 
-    let formObj = null;
+  fileContainer.style.display = radioManual.checked ? "flex" : "none";
+};
 
-    if (selectedForm === "assortment") {
-      const values = Object.values(assortmentFormElements);
+const handleClick = async () => {
+  const screenshotUrl = await chrome.tabs.captureVisibleTab();
 
-      if (values.filter(Boolean).length === values.length) {
-        formObj = {
-          ...assortmentFormElements,
-          screenshot: screenshotUrl,
-          pageUrl: url,
-        };
-      }
+  let formObj = null;
+
+  if (selectedForm === "assortment") {
+    const values = Object.values(assortmentFormElements);
+
+    if (values.filter(Boolean).length === values.length) {
+      formObj = {
+        ...assortmentFormElements,
+        screenshot: screenshotUrl,
+        pageUrl: tabUrl,
+      };
     }
+  }
 
-    if (selectedForm === "others") {
-      const values = Object.values(othersFormElements);
+  if (selectedForm === "others") {
+    const values = Object.values(othersFormElements);
 
-      if (values.filter(Boolean).length === values.length) {
-        formObj = {
-          ...othersFormElements,
-          screenshot: screenshotUrl,
-          pageUrl: url,
-        };
-      }
+    if (values.filter(Boolean).length === values.length) {
+      formObj = {
+        ...othersFormElements,
+        screenshot: screenshotUrl,
+        pageUrl: tabUrl,
+      };
     }
+  }
 
-    if (formObj) {
-      console.log("formObj", formObj);
-    } else {
-      console.log("err", formObj);
-    }
-  });
+  if (formObj) {
+    console.log("formObj", formObj);
+  } else {
+    console.log("err", formObj);
+  }
+};
+
+const handleFile = (e) => {
+  let fileName = String(e.target.value).split('\\').pop();
+  const label = document.getElementById("snoopy_file_label");
+
+  if (fileName) label.innerHTML = fileName;
+};
+
+const getCountry = (url) => {
+  const regex = /(?:https?:\/\/([^\/?\s#]+))?\/([^\/?\s#]*)(?:[\?#].*)?/g;
+  const matches = regex.exec(url);
+  const matchedCountry = matches[2] ?? null;
+
+  if (matchedCountry.includes("uae")) return "AE";
+  if (matchedCountry.includes("saudi")) return "SA";
+  if (matchedCountry.includes("egypt")) return "EG";
+  return null;
 };
 
 // when the popup HTML has loaded
 window.addEventListener("load", () => {
   // register event listeners
-  radioButtons.forEach((radio) => {
-    radio.addEventListener("click", handleRadioClick);
+  mainRadioButtons.forEach((radio) => {
+    radio.addEventListener("click", handleMainRadioClick);
+  });
+  attachmentRadioButtons.forEach((radio) => {
+    radio.addEventListener("click", handleAttachmentRadioClick);
   });
   formSubmit.addEventListener("click", handleClick);
+  fileInput.addEventListener("change", handleFile);
+
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    tabUrl = tabs[0].url;
+
+    if (tabUrl) {
+      countryButtons.forEach((country) => {
+        const defaultCountry = getCountry(tabUrl);
+        if (country.getAttribute("value") === defaultCountry)
+          country.checked = true;
+      });
+    }
+  });
 });
