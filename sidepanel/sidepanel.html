@@ -24,7 +24,7 @@
                         placeholder="(Lenovo tablets has less selection vs Amazon)"></textarea><br />
                 </div>
                 <div>
-                    <label class="snoopy-bold-label" for="snoopy_competitor">Country:</label>
+                    <label class="snoopy-bold-label" for="snoopy_competitor_url">Country:</label>
                     <br />
                     <div class="snoopy-radio-container snoopy-country-toggle">
                         <input type="radio" id="AE" name="snoopy_country" value="AE">
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="snoopy-bold-label" for="snoopy_competitor">Category present in noon:</label>
+                    <label class="snoopy-bold-label" for="snoopy_assortment">Category present in noon:</label>
                     <div class="snoopy-radio-container">
                         <input type="radio" id="not_present" name="snoopy_assortment" value="not_present">
                         <label class="snoopy-radio-label" for="not_present">Not present at all</label>
@@ -49,12 +49,12 @@
                     </div>
                 </div>
                 <div>
-                    <label class="snoopy-bold-label" for="snoopy_competitor">
+                    <label class="snoopy-bold-label" for="snoopy_competitor_url">
                         URL of the missing selection (from
                         competitor):
                     </label>
                     <br />
-                    <input class="snoopy-input" type="url" id="snoopy_competitor" name="snoopy_competitor"
+                    <input class="snoopy-input" type="url" id="snoopy_competitor_url" name="snoopy_competitor_url"
                         placeholder="https://www.amazon.ae/s?k=lenovo+tablets">
                     <br />
                 </div>
@@ -68,7 +68,7 @@
                         <label class="snoopy-radio-label" for="none-attachment">None</label>
                     </div>
                     <div class="snoopy-radio-container">
-                        <input type="radio" id="file-attachment" name="snoopy_attachment" value="file">
+                        <input type="radio" id="file-attachment" name="snoopy_attachment" value="file" accept="image/png, image/gif, image/jpeg">
                         <label class="snoopy-radio-label" for="file-attachment">File upload</label>
                     </div>
                     <div id="file-container" style="display: none;">
@@ -83,10 +83,10 @@
                             <span id="snoopy_file_label">Choose a file</span>
                         </label>
                     </div>
-                    <div class="snoopy-radio-container">
+                    <!-- <div class="snoopy-radio-container">
                         <input type="radio" id="screenshot-attachment" name="snoopy_attachment" value="screenshot">
                         <label class="snoopy-radio-label" for="screenshot-attachment">Get Screenshot</label>
-                    </div>
+                    </div> -->
                 </div>
             </form>
         </div>
