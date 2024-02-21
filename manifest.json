@@ -20,9 +20,14 @@
         "default_path": "/sidepanel/sidepanel.html"
     },
     "permissions": [
+        "activeTab",
         "sidePanel",
-        "tabs",
-        "activeTab"
+        "tabs"    
+    ],
+    "host_permissions": [
+        "https://www.noon.com/*",
+        "https://script.google.com/*",
+        "https://script.googleusercontent.com/*"
     ],
     "commands": {
         "_execute_action": {
