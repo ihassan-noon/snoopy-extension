@@ -159,13 +159,13 @@ const getBase64 = (file) => {
   reader.readAsDataURL(file);
   reader.onload = function () {
     fileUrl = reader.result;
-    console.log('reader.result', reader.result);
+    console.log("reader.result", reader.result);
   };
   reader.onerror = function (error) {
     console.log("File Reader Error: ", error);
     fileUrl = null;
   };
-}
+};
 
 const getImageFile = (type) => {
   if (["none", "file"].includes(type)) return "N/A";
@@ -194,54 +194,80 @@ const getCountry = async (url) => {
 };
 
 const handleFormSubmit = async () => {
-  let formObj = null;
+  try {
+    // add loading state & disable button
+    formSubmit.innerText = "Loading...";
+    formSubmit.classList.add("loading-state");
+    formSubmit.disabled = true;
 
-  if (selectedForm === "assortment") {
-    const values = Object.values(assortmentFormElements);
+    let formObj = null;
 
-    if (values.filter(Boolean).length === values.length) {
-      formObj = {
-        ...assortmentFormElements,
-        image_file: fileUrl,
-        page_url: tabUrl,
-      };
-    }
-  }
+    if (selectedForm === "assortment") {
+      const values = Object.values(assortmentFormElements);
 
-  if (selectedForm === "others") {
-    const values = Object.values(othersFormElements);
-
-    if (values.filter(Boolean).length === values.length) {
-      formObj = {
-        ...othersFormElements,
-        image_file: fileUrl,
-        page_url: tabUrl,
-      };
-    }
-  }
-
-  if (formObj) {
-    // const formData = new FormData();
-    // formData.append("image_file", imageUrl);
-    // Object.entries(formObj).map(([k, v]) => formData.append(k, v));
-
-    fetch(
-      "https://script.google.com/a/macros/noon.com/s/AKfycbxNf_zOekY19Eun6Mkau2AylIuGj01PoWzhdt3b5XJEo5wyzonNCpBCudaMvD42IBBufQ/exec",
-      {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formObj)
+      if (values.filter(Boolean).length === values.length) {
+        formObj = {
+          ...assortmentFormElements,
+          image_file: fileUrl,
+          page_url: tabUrl,
+        };
       }
-    )
-      .then((res) => res.text())
-      .then((finalRes) => {
-        console.log("Done", finalRes);
-      });
-  } else {
-    console.log("err", formObj);
+    }
+
+    if (selectedForm === "others") {
+      const values = Object.values(othersFormElements);
+
+      if (values.filter(Boolean).length === values.length) {
+        formObj = {
+          ...othersFormElements,
+          image_file: fileUrl,
+          page_url: tabUrl,
+        };
+      }
+    }
+
+    if (formObj) {
+      // const formData = new FormData();
+      // formData.append("image_file", imageUrl);
+      // Object.entries(formObj).map(([k, v]) => formData.append(k, v));
+
+      await fetch(
+        "https://script.google.com/a/macros/noon.com/s/AKfycbxNf_zOekY19Eun6Mkau2AylIuGj01PoWzhdt3b5XJEo5wyzonNCpBCudaMvD42IBBufQ/exec",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formObj),
+        }
+      )
+        .then((res) => res.text())
+        .then((finalRes) => {
+          formSubmit.classList.remove("loading-state");
+          if (finalRes == 200) {
+            formSubmit.innerText = "Done";
+            formSubmit.classList.add("done-state");
+          } else {
+            formSubmit.innerText = "Try again!";
+            formSubmit.classList.add("error-state");
+          }
+        });
+    } else {
+      console.log("err", formObj);
+      formSubmit.classList.add("error-state");
+    }
+  } catch (e) {
+    console.log("Something went wrong: ", e);
+  } finally {
+    // disable loading state and enable button
+    setTimeout(() => {
+      formSubmit.classList.remove("loading-state");
+      formSubmit.classList.remove("done-state");
+      formSubmit.classList.remove("error-state");
+      formSubmit.innerText = "Submit";
+      formSubmit.disabled = false;
+    }, 3000);
   }
 };
 
