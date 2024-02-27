@@ -11,7 +11,9 @@ let othersFormElements = {
   snoopy_others: null,
 };
 let tabUrl = null;
-let fileUrl = null;
+let fileBlob = null;
+let fileName = null;
+let fileType = null;
 
 // elements
 const formSubmit = document.getElementById("snoopy_submit");
@@ -138,10 +140,10 @@ const handleAttachmentRadioClick = (e) => {
 };
 
 const handleFile = (e) => {
-  let fileName = String(e.target.value).split("\\").pop();
+  let innerFileName = String(e.target.value).split("\\").pop();
   let fileObj = e.target.files[0];
 
-  if (fileName) fileLabel.innerHTML = fileName;
+  if (innerFileName) fileLabel.innerHTML = innerFileName;
   if (fileObj) {
     assortmentFormElements = {
       ...assortmentFormElements,
@@ -156,25 +158,29 @@ const handleFile = (e) => {
 
 const getBase64 = (file) => {
   var reader = new FileReader();
+  var ts = new Date();
   reader.readAsDataURL(file);
   reader.onload = function () {
-    fileUrl = reader.result;
-    console.log("reader.result", reader.result);
+    fileBlob = reader.result.split(',')[1]; // extracy only the file data part 
+    fileType = file.type;
+    fileName = ts.toJSON() + '_' + file.name;
   };
   reader.onerror = function (error) {
     console.log("File Reader Error: ", error);
-    fileUrl = null;
+    fileBlob = null;
+    fileType = null;
+    fileName = null;
   };
 };
 
-const getImageFile = (type) => {
-  if (["none", "file"].includes(type)) return "N/A";
-  if (type === "none") return "N/A";
-  if (type === "file") return fileInput.files[0];
-  // TODO: need to re-enable aftre bug fixes from Google
-  // if (type === "screenshot") return getCapture();
-  return null;
-};
+// const getImageFile = (type) => {
+//   if (["none", "file"].includes(type)) return "N/A";
+//   if (type === "none") return "N/A";
+//   if (type === "file") return fileInput.files[0];
+//   // TODO: need to re-enable aftre bug fixes from Google
+//   // if (type === "screenshot") return getCapture();
+//   return null;
+// };
 
 const getCapture = () => {
   return new Promise((resolve) => {
@@ -208,7 +214,11 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...assortmentFormElements,
-          image_file: fileUrl,
+          image_file: JSON.stringify({
+            file_blob: fileBlob,
+            file_type: fileType,
+            file_name: fileName,
+          }),
           page_url: tabUrl,
         };
       }
@@ -220,7 +230,11 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...othersFormElements,
-          image_file: fileUrl,
+          image_file: JSON.stringify({
+            file_blob: fileBlob,
+            file_type: fileType,
+            file_name: fileName,
+          }),
           page_url: tabUrl,
         };
       }
@@ -267,7 +281,7 @@ const handleFormSubmit = async () => {
       formSubmit.classList.remove("error-state");
       formSubmit.innerText = "Submit";
       formSubmit.disabled = false;
-    }, 3000);
+    }, 6000);
   }
 };
 

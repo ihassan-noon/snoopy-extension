@@ -298,6 +298,10 @@ label.snoopy-bold-label {
   background-color: #199d00;
 }
 
+#snoopy_submit.error-state {
+  background-color: #ff3333;
+}
+
 @-webkit-keyframes gradient-shift {
   0% {
     background-position: 0% 50%;
