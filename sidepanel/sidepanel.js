@@ -214,11 +214,11 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...assortmentFormElements,
-          image_file: JSON.stringify({
+          image_file: fileBlob ? JSON.stringify({
             file_blob: fileBlob,
             file_type: fileType,
             file_name: fileName,
-          }),
+          }) : null,
           page_url: tabUrl,
         };
       }
@@ -230,11 +230,11 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...othersFormElements,
-          image_file: JSON.stringify({
+          image_file: fileBlob ? JSON.stringify({
             file_blob: fileBlob,
             file_type: fileType,
             file_name: fileName,
-          }),
+          }) : null,
           page_url: tabUrl,
         };
       }
