@@ -154,11 +154,25 @@ const humanFileSize = (size) => {
   );
 };
 
+// test valid file types
+const isValidImageType = (type) => ['image/jpeg', 'image/png'].includes(type);
+
 const handleFile = (e) => {
   let innerFileName = String(e.target.value).split("\\").pop();
   let fileObj = e.target.files[0];
   const fileSize = fileObj.size / 1024 / 1024; // in MiB
+  const fileType = fileObj.type;
   const readableFileSize = humanFileSize(fileObj.size); // get the file size in readable format
+
+  if (!isValidImageType(fileType)) {
+    alert(
+      `Only JPEG/PNG types are accepted!`
+    );
+    // and then reset file input state
+    resetFileInput();
+    // break here
+    return;
+  }
 
   if (fileObj && fileSize <= 2) {
     if (innerFileName)
