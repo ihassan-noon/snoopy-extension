@@ -199,8 +199,8 @@ label.snoopy-bold-label {
 .snoopy-form #file-container {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: flex-end;
+  justify-content: space-between;
   padding: 10px 22px 5px;
 }
 
@@ -213,31 +213,34 @@ label.snoopy-bold-label {
   z-index: -1;
 }
 
-.snoopy-form #file-container > #snoopy_file + label {
+.snoopy-form #file-container > #snoopy_file + label#snoopy_file_container {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   column-gap: 6px;
-  max-width: 80%;
+  max-width: 60%;
   font-size: 0.75rem;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
   overflow: hidden;
-  padding: 5px 15px;
+  padding: 5px;
   color: #333;
   border: 2px solid currentColor;
   transition: all 250ms ease-in-out;
   opacity: 1;
 }
 
-.snoopy-form #file-container > #snoopy_file + label:hover {
+.snoopy-form
+  #file-container
+  > #snoopy_file
+  + label#snoopy_file_container:hover {
   opacity: 0.5;
 }
 
-.snoopy-form #file-container #snoopy_file_label {
+.snoopy-form #file-container #snoopy_file_name {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -246,7 +249,21 @@ label.snoopy-bold-label {
 
 .snoopy-form #file-container #snoopy_file_icon {
   width: 14px;
+  min-width: 14px;
   height: 14px;
+  min-height: 14px;
+}
+
+.snoopy-form #file-container .file-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  margin-left: 6px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #333;
 }
 
 #snoopy_submit {

@@ -18,7 +18,8 @@ let fileType = null;
 // elements
 const formSubmit = document.getElementById("snoopy_submit");
 const fileInput = document.getElementById("snoopy_file");
-const fileLabel = document.getElementById("snoopy_file_label");
+const fileNameLabel = document.getElementById("snoopy_file_name");
+const fileLabelContainer = document.getElementById("snoopy_file_container");
 const mainRadioButtons = document.querySelectorAll('input[name="snoopy"]');
 const attachmentRadioButtons = document.querySelectorAll(
   'input[name="snoopy_attachment"]'
@@ -127,24 +128,42 @@ const handleAttachmentRadioClick = (e) => {
   fileContainer.style.display = radioManual.checked ? "flex" : "none";
   // reset the snoopy_attachment value &  for "file" state
   if (radioVal === "file") {
-    fileLabel.innerHTML = "Choose a file";
-    fileInput.value = null;
-
-    // update the object
-    delete assortmentFormElements.snoopy_file;
-    assortmentFormElements = {
-      ...assortmentFormElements,
-      snoopy_attachment: null,
-    };
+    resetFileInput();
   }
+};
+
+const resetFileInput = () => {
+  // add both title and innerHTML (title for smeantic tooltip)
+  fileNameLabel.innerHTML = fileLabelContainer.title = "Choose a file";
+  fileInput.value = null;
+
+  // update the object
+  delete assortmentFormElements.snoopy_file;
+  assortmentFormElements = {
+    ...assortmentFormElements,
+    snoopy_attachment: null,
+  };
+};
+
+const humanFileSize = (size) => {
+  var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+  return (
+    (size / Math.pow(1024, i)).toFixed(2) * 1 +
+    " " +
+    ["B", "kB", "MB", "GB", "TB"][i]
+  );
 };
 
 const handleFile = (e) => {
   let innerFileName = String(e.target.value).split("\\").pop();
   let fileObj = e.target.files[0];
+  const fileSize = fileObj.size / 1024 / 1024; // in MiB
+  const readableFileSize = humanFileSize(fileObj.size); // get the file size in readable format
 
-  if (innerFileName) fileLabel.innerHTML = innerFileName;
-  if (fileObj) {
+  if (fileObj && fileSize <= 2) {
+    if (innerFileName)
+      fileNameLabel.innerHTML =
+        fileLabelContainer.title = `[${readableFileSize}] ${innerFileName}`;
     assortmentFormElements = {
       ...assortmentFormElements,
       snoopy_attachment: "file",
@@ -153,17 +172,24 @@ const handleFile = (e) => {
     getBase64(fileObj);
     // validate form
     formValidator();
+  } else {
+    alert(
+      `File size should not exceed 2MB, selected file size is ${readableFileSize}!`
+    );
+    // and then reset file input state
+    resetFileInput();
   }
 };
 
 const getBase64 = (file) => {
   var reader = new FileReader();
   var ts = new Date();
+
   reader.readAsDataURL(file);
   reader.onload = function () {
-    fileBlob = reader.result.split(',')[1]; // extracy only the file data part 
+    fileBlob = reader.result.split(",")[1]; // extracy only the file data part
     fileType = file.type;
-    fileName = ts.toJSON() + '_' + file.name;
+    fileName = ts.toJSON() + "_" + file.name;
   };
   reader.onerror = function (error) {
     console.log("File Reader Error: ", error);
@@ -214,11 +240,13 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...assortmentFormElements,
-          image_file: fileBlob ? JSON.stringify({
-            file_blob: fileBlob,
-            file_type: fileType,
-            file_name: fileName,
-          }) : null,
+          image_file: fileBlob
+            ? JSON.stringify({
+                file_blob: fileBlob,
+                file_type: fileType,
+                file_name: fileName,
+              })
+            : null,
           page_url: tabUrl,
         };
       }
@@ -230,11 +258,13 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...othersFormElements,
-          image_file: fileBlob ? JSON.stringify({
-            file_blob: fileBlob,
-            file_type: fileType,
-            file_name: fileName,
-          }) : null,
+          image_file: fileBlob
+            ? JSON.stringify({
+                file_blob: fileBlob,
+                file_type: fileType,
+                file_name: fileName,
+              })
+            : null,
           page_url: tabUrl,
         };
       }
