@@ -58,13 +58,50 @@ label.snoopy-bold-label {
 
 /* inner forms */
 #assortment-form,
-#others-form {
+#others-form,
+#email-form {
   display: none;
   color: #333;
   width: calc(100% - 20px);
   min-width: 250px;
   padding: 5px 10px 0;
   height: auto;
+}
+
+/* make email form visbale always */
+#email-form {
+  display: flex;
+}
+
+#email-form .snoopy-form {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+#email-form .snoopy-email-container {
+  position: relative;
+}
+
+#email-form .snoopy-email-container #snoopy_user_email:disabled {
+  opacity: 0.75;
+}
+
+#email-form .snoopy-email-container #snoopy_user_email_edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid #ccc;
+  margin-top: 4px; /* to match the input's top margin */
+  padding: 0 5px;
+  height: calc(100% - 4px);
+  background-color: rgba(255, 255, 255, 0.75);
+  opacity: 1;
+  transition: opacity 250ms ease-in-out;
+  cursor: pointer;
+}
+
+#email-form .snoopy-email-container #snoopy_user_email_edit:hover {
+  opacity: 0.6;
 }
 
 .snoopy-form {

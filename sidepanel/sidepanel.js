@@ -1,3 +1,6 @@
+// global constants
+const LS_KEY = "USER_EMAIL_ID";
+
 // global variables (will be overwritten)
 let selectedForm = null;
 let assortmentFormElements = {
@@ -16,7 +19,8 @@ let fileName = null;
 let fileType = null;
 
 // elements
-const formSubmit = document.getElementById("snoopy_submit");
+const emailInput = document.getElementById("snoopy_user_email");
+const emailClearBtn = document.getElementById("snoopy_user_email_edit");
 const fileInput = document.getElementById("snoopy_file");
 const fileNameLabel = document.getElementById("snoopy_file_name");
 const fileLabelContainer = document.getElementById("snoopy_file_container");
@@ -27,23 +31,26 @@ const attachmentRadioButtons = document.querySelectorAll(
 const countryButtons = document.querySelectorAll(
   'input[name="snoopy_country"]'
 );
+const formSubmit = document.getElementById("snoopy_submit");
 
 // form functions
 const formValidator = () => {
+  const emailVal = emailInput.value;
+
   // enable submit button when all the form elements are filled
   if (selectedForm === "assortment") {
-    const values = Object.values(assortmentFormElements);
+    const values = [emailVal, ...Object.values(assortmentFormElements)];
     formSubmit.disabled = values.filter(Boolean).length !== values.length;
   }
 
   if (selectedForm === "others") {
-    const values = Object.values(othersFormElements);
+    const values = [emailVal, ...Object.values(othersFormElements)];
     formSubmit.disabled = values.filter(Boolean).length !== values.length;
   }
 };
 
 // event handlers
-const handleInput = (event, selectedForm) => {
+const handleInput = (event) => {
   // The form field that triggered the event
   const { name, value } = event.target;
 
@@ -115,9 +122,7 @@ const handleMainRadioClick = () => {
   );
 
   if (formElement)
-    formElement.addEventListener("input", (event) =>
-      handleInput(event, selectedForm)
-    );
+    formElement.addEventListener("input", (event) => handleInput(event));
 };
 
 const handleAttachmentRadioClick = (e) => {
@@ -154,8 +159,8 @@ const humanFileSize = (size) => {
   );
 };
 
-// test valid file types
-const isValidImageType = (type) => ['image/jpeg', 'image/png'].includes(type);
+// test validity of file types (image only)
+const isValidImageType = (type) => ["image/jpeg", "image/png"].includes(type);
 
 const handleFile = (e) => {
   let innerFileName = String(e.target.value).split("\\").pop();
@@ -165,9 +170,7 @@ const handleFile = (e) => {
   const readableFileSize = humanFileSize(fileObj.size); // get the file size in readable format
 
   if (!isValidImageType(fileType)) {
-    alert(
-      `Only JPEG/PNG types are accepted!`
-    );
+    alert("Only JPEG/PNG types are accepted!");
     // and then reset file input state
     resetFileInput();
     // break here
@@ -240,6 +243,14 @@ const getCountry = async (url) => {
 };
 
 const handleFormSubmit = async () => {
+  const emailInputValue = emailInput.value;
+
+  // re-check email input value (just in case)
+  if (!emailInputValue) {
+    alert("Email Address is a required field!");
+    return;
+  }
+
   try {
     // add loading state & disable button
     formSubmit.innerText = "Loading...";
@@ -254,6 +265,7 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...assortmentFormElements,
+          snoopy_user: emailInputValue,
           image_file: fileBlob
             ? JSON.stringify({
                 file_blob: fileBlob,
@@ -272,6 +284,7 @@ const handleFormSubmit = async () => {
       if (values.filter(Boolean).length === values.length) {
         formObj = {
           ...othersFormElements,
+          snoopy_user: emailInputValue,
           image_file: fileBlob
             ? JSON.stringify({
                 file_blob: fileBlob,
@@ -306,13 +319,15 @@ const handleFormSubmit = async () => {
           if (finalRes == 200) {
             formSubmit.innerText = "Done";
             formSubmit.classList.add("done-state");
+            // on success, store the email address in chrome.storage
+            chrome.storage.local.set({ [LS_KEY]: emailInputValue });
           } else {
             formSubmit.innerText = "Try again!";
             formSubmit.classList.add("error-state");
           }
         });
     } else {
-      console.log("err", formObj);
+      console.log("Form Object Error : ", formObj);
       formSubmit.classList.add("error-state");
     }
   } catch (e) {
@@ -326,7 +341,27 @@ const handleFormSubmit = async () => {
       formSubmit.innerText = "Submit";
       formSubmit.disabled = false;
     }, 6000);
+    // trigger this to check if email is stored
+    loadEmailFromStorage();
   }
+};
+
+const loadEmailFromStorage = () => {
+  chrome.storage.local.get().then((result) => {
+    const lsEmailValue = result[LS_KEY];
+
+    // if email value is found in chrome.storage, set the value on input and disable it (to prevent accidental input)
+    if (lsEmailValue != null) {
+      emailInput.value = lsEmailValue;
+      emailInput.disabled = true;
+      // show the button
+      emailClearBtn.style.display = 'block';
+    } else {
+      emailInput.disabled = false;
+      // show the button
+      emailClearBtn.style.display = 'none';
+    }
+  });
 };
 
 // when the popup HTML has loaded
@@ -340,6 +375,17 @@ window.addEventListener("load", () => {
   });
   formSubmit.addEventListener("click", handleFormSubmit);
   fileInput.addEventListener("change", handleFile);
+  // trigger the form validator on email input changes
+  emailInput.addEventListener("input", formValidator);
+  emailClearBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    // clear the email value and enable the input
+    emailInput.value = null;
+    emailInput.disabled = false;
+    emailClearBtn.style.display = 'none';
+  });
+  // load email on load
+  loadEmailFromStorage();
 
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     tabUrl = tabs[0].url;

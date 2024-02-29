@@ -11,6 +11,26 @@
         </h1>
     </div>
     <div class="snoopy-container">
+        <div id="email-form">
+            <form class="snoopy-form">
+                <div>
+                    <label class="snoopy-bold-label" for="snoopy_user_email">
+                        Email Address:
+                    </label>
+                    <div class="snoopy-email-container">
+                        <input class="snoopy-input" type="email" id="snoopy_user_email" name="snoopy_user_email">
+                        <button id="snoopy_user_email_edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                style="fill: rgba(0, 0, 0, 1);">
+                                <path
+                                    d="M8.707 19.707 18 10.414 13.586 6l-9.293 9.293a1.003 1.003 0 0 0-.263.464L3 21l5.242-1.03c.176-.044.337-.135.465-.263zM21 7.414a2 2 0 0 0 0-2.828L19.414 3a2 2 0 0 0-2.828 0L15 4.586 19.414 9 21 7.414z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="snoopy-radio-form">
             <input type="radio" id="assortment-radio" name="snoopy" value="assortment" />
             <label class="snoopy-radio-label" for="assortment-radio">Assortment Gap</label>
@@ -37,7 +57,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="snoopy-bold-label" for="snoopy_assortment">Category present in noon:</label>
+                    <label class="snoopy-bold-label">Category present in noon:</label>
                     <div class="snoopy-radio-container">
                         <input type="radio" id="not_present" name="snoopy_assortment" value="not_present">
                         <label class="snoopy-radio-label" for="not_present">Not present at all</label>
@@ -59,7 +79,7 @@
                     <br />
                 </div>
                 <div>
-                    <label class="snoopy-bold-label" for="snoopy_attachment">
+                    <label class="snoopy-bold-label">
                         Image/attachment of category:
                     </label>
                     <br />

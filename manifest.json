@@ -22,7 +22,8 @@
     "permissions": [
         "activeTab",
         "sidePanel",
-        "tabs"    
+        "tabs",
+        "storage"
     ],
     "host_permissions": [
         "https://www.noon.com/*",
