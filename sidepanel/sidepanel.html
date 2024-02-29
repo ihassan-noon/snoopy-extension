@@ -17,8 +17,9 @@
                     <label class="snoopy-bold-label" for="snoopy_user_email">
                         Email Address:
                     </label>
-                    <div class="snoopy-email-container">
+                    <div class="snoopy-error-container">
                         <input class="snoopy-input" type="email" id="snoopy_user_email" name="snoopy_user_email">
+                        <span class="error-field">Please make sure to enter a valid noon email address!</span>
                         <button id="snoopy_user_email_edit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                 style="fill: rgba(0, 0, 0, 1);">
@@ -74,8 +75,11 @@
                         competitor):
                     </label>
                     <br />
-                    <input class="snoopy-input" type="url" id="snoopy_competitor_url" name="snoopy_competitor_url"
-                        placeholder="https://www.amazon.ae/s?k=lenovo+tablets">
+                    <div class="snoopy-error-container">
+                        <input class="snoopy-input" type="url" id="snoopy_competitor_url" name="snoopy_competitor_url"
+                            placeholder="https://www.amazon.ae/s?k=lenovo+tablets">
+                        <span class="error-field">Please make sure to enter a valid URL!</span>
+                    </div>
                     <br />
                 </div>
                 <div>
@@ -117,7 +121,8 @@
             </form>
         </div>
         <div class="snoopy-radio-form">
-            <input type="radio" id="others-radio" name="snoopy" value="others" />
+            <!-- keeping this disabled for now -->
+            <input type="radio" id="others-radio" name="snoopy" value="others" disabled />
             <label class="snoopy-radio-label" for="others-radio">Others</label>
         </div>
         <div id="others-form">

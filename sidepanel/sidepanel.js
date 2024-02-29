@@ -21,6 +21,7 @@ let fileType = null;
 // elements
 const emailInput = document.getElementById("snoopy_user_email");
 const emailClearBtn = document.getElementById("snoopy_user_email_edit");
+const urlInput = document.getElementById("snoopy_competitor_url");
 const fileInput = document.getElementById("snoopy_file");
 const fileNameLabel = document.getElementById("snoopy_file_name");
 const fileLabelContainer = document.getElementById("snoopy_file_container");
@@ -33,9 +34,41 @@ const countryButtons = document.querySelectorAll(
 );
 const formSubmit = document.getElementById("snoopy_submit");
 
+const validateNoonEmail = (email) => {
+  var re =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const domain = "@noon.com";
+  // first test the email format
+  // then proceed to test if it's from the right domain (Second argument is to check that the string ENDS with this domain, and that it doesn't just contain it)
+  return (
+    re.test(email) && email.indexOf(domain, email.length - domain.length) !== -1
+  );
+};
+
+const isUrlValid = (userInput) => {
+  var regex =
+    /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+  return userInput.match(regex);
+};
+
 // form functions
 const formValidator = () => {
   const emailVal = emailInput.value;
+  const urlVal = urlInput.value;
+
+  // validate the email and show error accordingly
+  if (emailVal && !validateNoonEmail(emailVal)) {
+    emailInput.classList.add("error-state");
+  } else {
+    emailInput.classList.remove("error-state");
+  }
+
+  // validate the URL and show error accordingly
+  if (urlVal && !isUrlValid(urlVal)) {
+    urlInput.classList.add("error-state");
+  } else {
+    urlInput.classList.remove("error-state");
+  }
 
   // enable submit button when all the form elements are filled
   if (selectedForm === "assortment") {
@@ -244,10 +277,21 @@ const getCountry = async (url) => {
 
 const handleFormSubmit = async () => {
   const emailInputValue = emailInput.value;
+  const urlInputValue = urlInput.value;
 
   // re-check email input value (just in case)
   if (!emailInputValue) {
     alert("Email Address is a required field!");
+    return;
+  }
+
+  // re-check the email & URL and trigger error if invalid
+  if (
+    (emailInputValue && !validateNoonEmail(emailInputValue)) ||
+    (urlInputValue && !isUrlValid(urlInputValue))
+  ) {
+    alert("Found some errors! Please resolve them to continue...");
+    formValidator();
     return;
   }
 
@@ -355,11 +399,11 @@ const loadEmailFromStorage = () => {
       emailInput.value = lsEmailValue;
       emailInput.disabled = true;
       // show the button
-      emailClearBtn.style.display = 'block';
+      emailClearBtn.style.display = "block";
     } else {
       emailInput.disabled = false;
       // show the button
-      emailClearBtn.style.display = 'none';
+      emailClearBtn.style.display = "none";
     }
   });
 };
@@ -377,12 +421,14 @@ window.addEventListener("load", () => {
   fileInput.addEventListener("change", handleFile);
   // trigger the form validator on email input changes
   emailInput.addEventListener("input", formValidator);
+  // trigger the form validator on URL input changes
+  urlInput.addEventListener("input", formValidator);
   emailClearBtn.addEventListener("click", (e) => {
     e.preventDefault();
     // clear the email value and enable the input
     emailInput.value = null;
     emailInput.disabled = false;
-    emailClearBtn.style.display = 'none';
+    emailClearBtn.style.display = "none";
   });
   // load email on load
   loadEmailFromStorage();
